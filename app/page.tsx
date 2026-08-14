@@ -11,6 +11,13 @@ import { readCache, writeCache } from '../lib/cache';
 export default function HomePage() {
   const [lang, setLang] = useState<Lang>('te'); const [data, setData] = useState<LibraryData>({ books: [], chapters: [], videos: [], languages: [] });
   const [query, setQuery] = useState(''); const [selected, setSelected] = useState<Row | null>(null); const [loading, setLoading] = useState(true); const [error, setError] = useState('');
+  const changeLanguage = (newLang: Lang) => {
+    setLang(newLang);
+    localStorage.setItem('shastrasetu_lang', newLang);
+    window.dispatchEvent(
+      new CustomEvent('shastrasetu-language', { detail: newLang })
+    );
+  };
   useEffect(() => {
     const initial = getStoredLang(); setLang(initial); const cached = readCache();
     if (cached) { setData(cached); setLoading(false); }
@@ -21,6 +28,30 @@ export default function HomePage() {
   const books = useMemo(() => data.books.filter(b => String(b.active).toLowerCase() !== 'false' && [b.title_te, b.title_en, b.title_hi].join(' ').toLowerCase().includes(query.trim().toLowerCase())), [data.books, query]);
   const allActive = data.books.filter(b => String(b.active).toLowerCase() !== 'false').length;
   return <>
+    <div className="language-bar">
+      <span>{t(lang, 'language')}:</span>
+
+      <button
+        className={lang === 'en' ? 'active' : ''}
+        onClick={() => changeLanguage('en')}
+      >
+        English
+      </button>
+
+      <button
+        className={lang === 'te' ? 'active' : ''}
+        onClick={() => changeLanguage('te')}
+      >
+        తెలుగు
+      </button>
+
+      <button
+        className={lang === 'hi' ? 'active' : ''}
+        onClick={() => changeLanguage('hi')}
+      >
+        हिन्दी
+      </button>
+    </div>
     <main>
       <section className="hero"><div className="hero-inner"><div><span className="eyebrow">SHASTRASETU</span><h1>{t(lang, 'heroTitle')}</h1><p>{t(lang, 'heroText')}</p><div className="hero-actions"><a className="btn btn-primary" href="#library">{t(lang, 'browse')}</a><button className="btn btn-soft" onClick={() => books[0] && setSelected(books[0])}>{t(lang, 'interest')}</button></div></div><div className="hero-card"><div className="hero-card-icon">📚</div><strong>{allActive}</strong><span>{t(lang, 'books')}</span></div></div></section>
       <section className="toolbar section" id="library"><div><h2>{t(lang, 'lib')}</h2><p className="muted">{t(lang, 'sub')}</p></div><div className="search-wrap"><span>⌕</span><input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder={t(lang, 'search')} /></div></section>
