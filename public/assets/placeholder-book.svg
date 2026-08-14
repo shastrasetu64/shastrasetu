@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900">
+<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f2d8a9"/><stop offset="1" stop-color="#a86d25"/></linearGradient></defs>
+<rect width="600" height="900" fill="url(#g)"/>
+<rect x="28" y="28" width="544" height="844" rx="8" fill="none" stroke="#fff5df" stroke-width="4"/>
+<text x="300" y="260" text-anchor="middle" font-family="serif" font-size="70" fill="#fffaf1">శాస్త్రసేతు</text>
+<text x="300" y="360" text-anchor="middle" font-family="sans-serif" font-size="34" fill="#fffaf1">SPIRITUAL LIBRARY</text>
+<text x="300" y="690" text-anchor="middle" font-family="serif" font-size="28" fill="#fffaf1">BOOK COVER</text>
+</svg>
