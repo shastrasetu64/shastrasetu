@@ -1,7 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
+import { FormEvent, useEffect, useState } from 'react';
 import { getAllData, postApi } from '../../lib/api';
 import type { LibraryData, Row } from '../../lib/types';
 import { rowTitle } from '../../lib/i18n';
@@ -32,7 +31,28 @@ function AdminTable({section,data,onAdd,onEdit,onDelete}:{section:string,data:Li
 
 function Editor({type,item,data,password,onCancel,onSaved}:{type:string,item?:Row,data:LibraryData,password:string,onCancel:()=>void,onSaved:()=>void}){
   const [form,setForm]=useState<Row>(()=>({...item})); const [msg,setMsg]=useState('');
-  useEffect(()=>{if(!item){setForm(type==='book'?{id:uid('book'),active:'true'}:type==='chapter'?{id:uid('chapter'),chapterNumber:1,active:'true'}:type==='video'?{id:uid('video'),sortOrder:1,active:'true',language:'te'}:type==='language'?{code:uid('lang'),active:'true'}:{}}):setForm({...item})},[item,type]);
+  useEffect(() => {
+  if (!item) {
+    if (type === 'book') {
+      setForm({ id: uid('book'), active: 'true' });
+    } else if (type === 'chapter') {
+      setForm({ id: uid('chapter'), chapterNumber: 1, active: 'true' });
+    } else if (type === 'video') {
+      setForm({
+        id: uid('video'),
+        sortOrder: 1,
+        active: 'true',
+        language: 'te',
+      });
+    } else if (type === 'language') {
+      setForm({ code: uid('lang'), active: 'true' });
+    } else {
+      setForm({});
+    }
+  } else {
+    setForm({ ...item });
+  }
+}, [item, type]);
   const set=(k:string,v:any)=>setForm((x)=>({...x,[k]:v}));
   if(type==='lead') return <div><h2>Interested Users</h2><button className="btn btn-soft" onClick={onCancel}>Back</button></div>;
   async function save(e:FormEvent){e.preventDefault();setMsg('Saving…');try{const action=item?`update${type[0].toUpperCase()+type.slice(1)}`:`create${type[0].toUpperCase()+type.slice(1)}`;const r=await postApi({action,id:item?.id||item?.code,data:form,password});if(!r.success)throw new Error(r.message||'Failed');await onSaved()}catch(e:any){setMsg('Could not save: '+e.message)}}

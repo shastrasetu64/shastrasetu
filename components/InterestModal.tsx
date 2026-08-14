@@ -25,34 +25,36 @@ export default function InterestModal({
 
   if (!book) return null;
 
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setMessage(t(lang, 'submitting'));
+const selectedBook = book;
 
-    try {
-      const r = await postApi({
-        action: 'submitLead',
-        bookId: book.id,
-        bookName: rowTitle(book, lang),
-        name: name.trim(),
-        mobile: mobile.trim(),
-        email: email.trim(),
-        language: leadLang,
-      });
+async function submit(e: FormEvent) {
+  e.preventDefault();
+  setBusy(true);
+  setMessage(t(lang, 'submitting'));
 
-      if (!r.success) throw new Error(r.message || 'Failed');
+  try {
+    const r = await postApi({
+      action: 'submitLead',
+      bookId: selectedBook.id,
+      bookName: rowTitle(selectedBook, lang),
+      name: name.trim(),
+      mobile: mobile.trim(),
+      email: email.trim(),
+      language: leadLang,
+    });
 
-      setMessage(t(lang, 'submitThanks'));
-      setName('');
-      setMobile('');
-      setEmail('');
-    } catch {
-      setMessage(t(lang, 'submitError'));
-    } finally {
-      setBusy(false);
-    }
+    if (!r.success) throw new Error(r.message || 'Failed');
+
+    setMessage(t(lang, 'submitThanks'));
+    setName('');
+    setMobile('');
+    setEmail('');
+  } catch {
+    setMessage(t(lang, 'submitError'));
+  } finally {
+    setBusy(false);
   }
+}
 
   return (
     <div className="modal" aria-hidden="false">
